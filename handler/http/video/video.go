@@ -1,64 +1,45 @@
 package video
 
 import (
-	"errors"
 	"net/http"
 
-	"github.com/dailoi280702/vrs-ranking-service/log"
 	"github.com/dailoi280702/vrs-ranking-service/type/request"
 	"github.com/dailoi280702/vrs-ranking-service/usecase"
-	"github.com/go-playground/validator/v10"
+	"github.com/dailoi280702/vrs-ranking-service/util/apperror"
+	"github.com/dailoi280702/vrs-ranking-service/util/echoutil"
 	"github.com/labstack/echo/v4"
 )
 
 func SetupRoute(gr *echo.Group) {
 	g := gr.Group("/videos")
-	g.POST("/interactions", updateInterfaction)
+	g.POST("/interactions", updateInteraction)
 	g.GET("/top", getTop)
 }
 
-func updateInterfaction(c echo.Context) error {
+func updateInteraction(c echo.Context) error {
 	var (
-		ctx    = c.Request().Context()
-		logger = log.Logger()
-		uc     = usecase.New()
-		req    request.UpdateInteraction
+		uc  = usecase.New()
+		req request.UpdateInteraction
 	)
 
 	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]any{
-			"message": err.Error(),
-		})
+		return echoutil.ReponseErr(c, apperror.ErrBadRequest().WithMessage(err.Error()))
 	}
 
 	err := uc.Video.UpdateInteraction(c.Request().Context(), req)
 	if err != nil {
-		var validationErrrs validator.ValidationErrors
-
-		if errors.As(err, &validationErrrs) {
-			return c.JSON(http.StatusBadRequest, map[string]any{
-				"message": err.Error(),
-			})
-		}
-
-		logger.ErrorContext(ctx, "Failed to register user", "error", err, "request", req)
-
-		return c.JSON(http.StatusInternalServerError, map[string]any{
-			"message": err.Error(),
-		})
+		return echoutil.ReponseErr(c, err)
 	}
 
-	return c.JSON(http.StatusInternalServerError, map[string]any{
-		"message": "ok",
+	return c.JSON(http.StatusOK, map[string]any{
+		"message": "success",
 	})
 }
 
 func getTop(c echo.Context) error {
 	var (
-		ctx    = c.Request().Context()
-		logger = log.Logger()
-		uc     = usecase.New()
-		req    request.GetTopVideos
+		uc  = usecase.New()
+		req request.GetTopVideos
 	)
 
 	if err := c.Bind(&req); err != nil {
@@ -69,12 +50,8 @@ func getTop(c echo.Context) error {
 
 	resp, err := uc.Video.GetTopVideos(c.Request().Context(), req)
 	if err != nil {
-		logger.ErrorContext(ctx, "Failed to register user", "error", err)
-
-		return c.JSON(http.StatusInternalServerError, map[string]any{
-			"message": err.Error(),
-		})
+		return echoutil.ReponseErr(c, err)
 	}
 
-	return c.JSON(http.StatusInternalServerError, resp)
+	return c.JSON(http.StatusOK, resp)
 }

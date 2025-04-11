@@ -27,13 +27,17 @@ func init() {
 	if err != nil {
 		logger.Error("Failed to connect general service", "error", err, "endpoint", cfg.GeneralServiceEndpoint)
 	} else {
-		logger.Info("Connected to general service")
+		logger.Info("Connected to general service", "host", cfg.GeneralServiceEndpoint)
 	}
 
 	client = proto.NewServiceClient(conn)
 }
 
 func Close() {
+	if conn == nil {
+		return
+	}
+
 	if err := conn.Close(); err != nil {
 		log.Logger().Error("Failed to disconnect general service", "error", err)
 	}

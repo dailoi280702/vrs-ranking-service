@@ -8,7 +8,6 @@ import (
 
 func NewHTTPHandler() *echo.Echo {
 	e := echo.New()
-	// cfg = config.GetConfig()
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
