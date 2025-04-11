@@ -26,7 +26,7 @@ func (u *Usecase) UpdateInteraction(ctx context.Context, req request.UpdateInter
 	case request.VideoInteractionLike:
 		video.Likes++
 	case request.VideoInteractionShare:
-		video.Likes++
+		video.Shares++
 	case request.VideoInteractionView:
 		video.Views++
 	case request.VideoInteractionWatch:
