@@ -14,6 +14,8 @@ type Config struct {
 	Port    string `envconfig:"SERVEe_PORT"`
 	IsDebug bool   `envconfig:"DEBUG"`
 
+	GeneralServiceEndpoint string `envconfig:"GENERAL_SERVICE_ENDPOINT"`
+
 	MySQL struct {
 		Host   string `envconfig:"DB_HOST"`
 		Port   string `envconfig:"DB_PORT"`

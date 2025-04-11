@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/dailoi280702/vrs-ranking-service/client/generalservice"
 	_ "github.com/dailoi280702/vrs-ranking-service/client/mysql"
 	_ "github.com/dailoi280702/vrs-ranking-service/client/redis"
 	"github.com/dailoi280702/vrs-ranking-service/config"
@@ -21,6 +22,8 @@ func main() {
 		errs   = make(chan error)
 		h      = http.NewHTTPHandler()
 	)
+
+	defer generalservice.Close()
 
 	go func() {
 		logger.Info("Server is running", "port", cfg.Port)
