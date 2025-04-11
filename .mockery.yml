@@ -1,0 +1,10 @@
+issue-845-fix: True
+resolve-type-alias: False
+disable-version-string: True
+packages:
+  github.com/dailoi280702/vrs-ranking-service/client/redis:
+    config:
+      outpkg: "mockredis"
+      dir: "mock/redis"
+    interfaces:
+      I:
