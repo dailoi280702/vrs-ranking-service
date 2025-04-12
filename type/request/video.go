@@ -13,7 +13,7 @@ const (
 )
 
 type UpdateInteraction struct {
-	VideoId          int64            `json:"video_id" validate:"required"`
+	VideoId          int64            `json:"video_id" validate:"required,gt=0"`
 	Type             VideoInteraction `json:"type" validate:"required,oneof=view like share comment watch"`
 	WatchTimeSeconds int64            `json:"watch_time" validate:"gte=0"`
 }
@@ -31,5 +31,17 @@ func (r *UpdateInteraction) Validate() error {
 }
 
 type GetTopVideos struct {
-	UserId *int64 `json:"user_id"`
+	UserId *int64 `json:"user_id" validate:"omitempty,gt=0"`
+}
+
+func (r *GetTopVideos) Validate() error {
+	if err := transformer.Struct(context.Background(), r); err != nil {
+		return err
+	}
+
+	if err := validator.Struct(r); err != nil {
+		return err
+	}
+
+	return nil
 }
