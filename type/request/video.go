@@ -15,7 +15,7 @@ const (
 type UpdateInteraction struct {
 	VideoId          int64            `json:"video_id" validate:"required"`
 	Type             VideoInteraction `json:"type" validate:"required,oneof=view like share comment watch"`
-	WatchTimeSeconds int64            `json:"watch_time"`
+	WatchTimeSeconds int64            `json:"watch_time" validate:"gte=0"`
 }
 
 func (r *UpdateInteraction) Validate() error {

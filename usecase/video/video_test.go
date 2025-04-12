@@ -63,6 +63,30 @@ func (s *TestSuite) TestUpdateInteraction_Success() {
 	s.NoError(err)
 }
 
+func (s *TestSuite) TestUpdateInteraction_WatchTimeExceedsLength() {
+	req := request.UpdateInteraction{
+		VideoId:          1,
+		Type:             request.VideoInteractionWatch,
+		WatchTimeSeconds: 101,
+	}
+
+	video := &proto.Video{
+		Id:       req.VideoId,
+		Likes:    0,
+		Comments: 0,
+		Shares:   0,
+		Views:    0,
+		Length:   100,
+	}
+
+	s.mockGSC.EXPECT().GetVideoByID(s.ctx, &proto.IdRequest{Id: req.VideoId}).Return(video, nil)
+
+	err := s.uc.UpdateInteraction(s.ctx, req)
+	s.Error(err)
+	s.Equal(400, err.(*apperror.AppError).Code)
+	s.Equal("Watch time can not exceed video length", err.(*apperror.AppError).Message)
+}
+
 func (s *TestSuite) TestUpdateInteraction_InvalidRequest() {
 	req := request.UpdateInteraction{}
 

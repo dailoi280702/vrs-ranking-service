@@ -20,6 +20,10 @@ func (u *Usecase) UpdateInteraction(ctx context.Context, req request.UpdateInter
 		return apperror.ErrGRPC(err)
 	}
 
+	if req.WatchTimeSeconds > video.Length {
+		return apperror.ErrBadRequest().WithMessage("Watch time can not exceed video length")
+	}
+
 	switch req.Type {
 	case request.VideoInteractionComment:
 		video.Comments++
@@ -29,6 +33,7 @@ func (u *Usecase) UpdateInteraction(ctx context.Context, req request.UpdateInter
 		video.Shares++
 	case request.VideoInteractionView:
 		video.Views++
+		video.WatchTime += req.WatchTimeSeconds
 	case request.VideoInteractionWatch:
 		video.WatchTime += req.WatchTimeSeconds
 	}
@@ -49,7 +54,9 @@ func (u *Usecase) UpdateInteraction(ctx context.Context, req request.UpdateInter
 
 	go func(videoId int64, score float64) {
 		logger := log.Logger()
-		if err := u.Rdb.Zadd(ctx, constant.RedisVideoRankKey, video.GetId(), score); err != nil {
+		ctx := context.Background()
+
+		if err := u.Rdb.Zadd(ctx, constant.RedisVideoRankKey, videoId, score); err != nil {
 			logger.Error("Redis error", "error", err, "key", constant.RedisVideoRankKey, "member", videoId)
 		}
 	}(req.VideoId, score)
