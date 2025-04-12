@@ -22,7 +22,7 @@ func (u *Usecase) GetTopVideos(ctx context.Context, req request.GetTopVideos) ([
 	watchedId := []int64{}
 	cachedIds := []int64{}
 	var wg sync.WaitGroup
-	ctx, cancel := context.WithCancel(context.Background())
+	cancelCtx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	if req.UserId != nil {
@@ -30,7 +30,7 @@ func (u *Usecase) GetTopVideos(ctx context.Context, req request.GetTopVideos) ([
 
 		go func() {
 			defer wg.Done()
-			ids, err := u.fetchWatchedVideoIds(ctx, *req.UserId)
+			ids, err := u.fetchWatchedVideoIds(cancelCtx, *req.UserId)
 			watchedId = ids
 			errCh <- err
 		}()
@@ -40,7 +40,7 @@ func (u *Usecase) GetTopVideos(ctx context.Context, req request.GetTopVideos) ([
 
 	go func() {
 		defer wg.Done()
-		ids, err := u.fetchRankedVideoIds(ctx)
+		ids, err := u.fetchRankedVideoIds(cancelCtx)
 		cachedIds = ids
 		errCh <- err
 	}()
