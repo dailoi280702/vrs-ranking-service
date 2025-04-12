@@ -1,0 +1,214 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Server for using Swagger with Echo.",
+        "title": "Swagger Video ranking service API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:9000",
+    "basePath": "/api/v1",
+    "paths": {
+        "/videos/top": {
+            "get": {
+                "description": "Get top videos, optionally filtered by user watch history",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "videos"
+                ],
+                "summary": "Get top videos",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "example": 3,
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Data-array_response_Video"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/videos/{id}/interactions": {
+            "post": {
+                "description": "Update video interaction (like, comment, share, view, watch)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "videos"
+                ],
+                "summary": "Update video interaction",
+                "parameters": [
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UpdateInteraction"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "example": "5",
+                        "description": "Video ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Data-string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "request.UpdateInteraction": {
+            "type": "object",
+            "required": [
+                "type"
+            ],
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "view",
+                        "like",
+                        "share",
+                        "comment",
+                        "watch"
+                    ],
+                    "example": "view"
+                },
+                "watch_time": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 300
+                }
+            }
+        },
+        "response.Data-array_response_Video": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.Video"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "response.Data-string": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "response.Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 123
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Error message"
+                }
+            }
+        },
+        "response.Video": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 5
+                },
+                "length": {
+                    "type": "integer",
+                    "example": 600
+                },
+                "likes": {
+                    "type": "integer",
+                    "example": 1000
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Funny Cat Video"
+                },
+                "share": {
+                    "type": "integer",
+                    "example": 500
+                },
+                "view": {
+                    "type": "integer",
+                    "example": 10000
+                }
+            }
+        }
+    }
+}

@@ -18,19 +18,29 @@ func ReponseErr(c echo.Context, err error) error {
 
 	if err != nil {
 		if errors.As(err, &appError) {
-			if appError.Code == http.StatusInternalServerError {
+			if appError.Code >= 500 {
 				logger.ErrorContext(ctx, "Internal server error", "error", err)
 			}
 
-			return c.JSON(appError.Code, map[string]any{
-				"message": appError.Message,
-			})
+			return c.JSON(http.StatusInternalServerError, apperror.ErrInternal().WithMessage(err.Error()))
 		}
 	}
 
 	logger.ErrorContext(ctx, "Internal server error", "error", err)
 
-	return c.JSON(http.StatusInternalServerError, map[string]any{
-		"message": err.Error(),
+	return c.JSON(http.StatusInternalServerError, apperror.ErrInternal().WithMessage(err.Error()))
+}
+
+type Data[T any] struct {
+	Code    int32  `json:"code" example:"200" description:"Response code"`
+	Message string `json:"message" example:"success" description:"Response message"`
+	Data    T      `json:"data" description:"Response data"`
+}
+
+func ReponseData[T any](c echo.Context, data T) error {
+	return c.JSON(http.StatusOK, Data[T]{
+		Code:    http.StatusOK,
+		Data:    data,
+		Message: "success",
 	})
 }

@@ -12,3 +12,12 @@ test:
 .PHONY: coverage
 coverage:
 	@open tmp/coverage.html
+
+.PHONY: docs
+docs:
+	@swag init
+	@swag fmt
+
+.PHONY: dev
+dev:
+	@air main.go

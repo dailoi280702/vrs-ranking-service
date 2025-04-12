@@ -4,6 +4,7 @@ import (
 	"github.com/dailoi280702/vrs-ranking-service/handler/http/video"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 func NewHTTPHandler() *echo.Echo {
@@ -14,6 +15,8 @@ func NewHTTPHandler() *echo.Echo {
 	e.GET("/healthz", func(c echo.Context) error {
 		return c.JSON(200, map[string]string{"message": "ok"})
 	})
+
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	g := e.Group("/api/v1")
 

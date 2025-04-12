@@ -8,10 +8,11 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// AppError represents a custom application error.
 type AppError struct {
-	Raw     error
-	Code    int
-	Message string
+	Raw     error  `json:"-"`
+	Code    int    `json:"code" example:"123" description:"HTTP status code"`
+	Message string `json:"message" example:"Error message" description:"Error message"`
 }
 
 func (e *AppError) Error() string {
