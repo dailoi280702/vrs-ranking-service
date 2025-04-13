@@ -7,7 +7,6 @@ import (
 	"syscall"
 
 	"github.com/dailoi280702/vrs-ranking-service/client/generalservice"
-	_ "github.com/dailoi280702/vrs-ranking-service/client/mysql"
 	_ "github.com/dailoi280702/vrs-ranking-service/client/redis"
 	"github.com/dailoi280702/vrs-ranking-service/config"
 	_ "github.com/dailoi280702/vrs-ranking-service/docs"
@@ -18,7 +17,7 @@ import (
 // @title			Swagger Video ranking service API
 // @version		1.0
 // @description	Server for using Swagger with Echo.
-// @host			localhost:9000
+// @host			vrs-lb-77799277.ap-southeast-1.elb.amazonaws.com:9000
 // @BasePath		/api/v1
 func main() {
 	cfg := config.GetConfig()

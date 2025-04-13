@@ -22,7 +22,7 @@ func ReponseErr(c echo.Context, err error) error {
 				logger.ErrorContext(ctx, "Internal server error", "error", err)
 			}
 
-			return c.JSON(http.StatusInternalServerError, apperror.ErrInternal().WithMessage(err.Error()))
+			return c.JSON(appError.Code, appError)
 		}
 	}
 
