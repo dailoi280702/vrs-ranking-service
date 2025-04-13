@@ -6,7 +6,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:9000",
+    "host": "vrs-lb-77799277.ap-southeast-1.elb.amazonaws.com:9000",
     "basePath": "/api/v1",
     "paths": {
         "/videos/top": {

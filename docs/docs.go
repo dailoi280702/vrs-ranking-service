@@ -222,7 +222,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:9000",
+	Host:             "vrs-lb-77799277.ap-southeast-1.elb.amazonaws.com:9000",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Swagger Video ranking service API",
